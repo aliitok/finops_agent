@@ -3,8 +3,9 @@ import os
 import json
 from aws.assume_role import assume_role
 from aws.cost_explorer import fetch_monthly_cost_by_service, fetch_daily_cost
-from db.db import init_db, save_monthly, save_daily
+from db.db import init_db, save_monthly, save_daily, save_ta_summary
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from services.trusted_advisor import get_ta_summary
 
 def load_accounts():
     with open("registry/accounts.json") as f:
@@ -54,6 +55,15 @@ def run():
         d = fetch_daily_cost(creds)
         daily = process_daily(d)
         save_daily(acc["account_id"], daily)
+        
+        # trusted advisor summaries
+        try:
+            ta = get_ta_summary(acc)
+        except Exception as e:
+            print(f"Trusted Advisor fetch failed for {acc['name']}: {e}")
+            ta = {"error": str(e)}
+
+        save_ta_summary(acc["account_id"], ta)
 
 if __name__ == "__main__":
     run()

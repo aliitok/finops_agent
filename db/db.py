@@ -21,6 +21,14 @@ def init_db():
     )
     """)
 
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS ta_summary (
+        account_id TEXT,
+        data TEXT,
+        updated_at TEXT
+    )
+    """)
+
 def save_monthly(account_id, total_cost, top_services):
     conn.execute(
         "DELETE FROM monthly_cost WHERE account_id=?",
@@ -47,6 +55,21 @@ def save_daily(account_id, data):
 
     conn.commit()
 
+
+def save_ta_summary(account_id, data):
+    """Save a Trusted Advisor summary (JSON serializable) for an account."""
+    conn.execute(
+        "DELETE FROM ta_summary WHERE account_id=?",
+        (account_id,)
+    )
+
+    conn.execute(
+        "INSERT INTO ta_summary VALUES (?, ?, datetime('now'))",
+        (account_id, json.dumps(data))
+    )
+
+    conn.commit()
+
 def get_monthly(account_id):
     cur = conn.execute(
         "SELECT total_cost, top_services FROM monthly_cost WHERE account_id=?",
@@ -64,6 +87,15 @@ def get_monthly(account_id):
 def get_daily(account_id):
     cur = conn.execute(
         "SELECT data FROM daily_cost WHERE account_id=?",
+        (account_id,)
+    )
+    row = cur.fetchone()
+    return json.loads(row[0]) if row else None
+
+
+def get_ta_summary(account_id):
+    cur = conn.execute(
+        "SELECT data FROM ta_summary WHERE account_id=?",
         (account_id,)
     )
     row = cur.fetchone()

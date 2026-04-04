@@ -1,4 +1,4 @@
-from db.db import get_monthly, get_daily
+from db.db import get_monthly, get_daily, get_ta_summary
 
 def detect_spike(daily):
     if not daily or len(daily) < 2:
@@ -12,6 +12,7 @@ def detect_spike(daily):
 def explain(account_id):
     m = get_monthly(account_id)
     d = get_daily(account_id)
+    ta = get_ta_summary(account_id)
 
     if not m:
         return "No data available"
@@ -22,11 +23,13 @@ def explain(account_id):
         return {
             "summary": "Cost spike detected",
             "total": m["total_cost"],
-            "top_services": m["top_services"]
+            "top_services": m["top_services"],
+            "trusted_advisor": ta
         }
     else:
         return {
             "summary": "Cost is stable",
             "total": m["total_cost"],
-            "top_services": m["top_services"]
+            "top_services": m["top_services"],
+            "trusted_advisor": ta
         }
