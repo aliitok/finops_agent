@@ -33,7 +33,7 @@ def get_ta_client(creds):
 # ==============================
 
 def resolve_check_ids(client):
-    global _CHECK_ID_CACHE
+    # global _CHECK_ID_CACHE
 
     if _CHECK_ID_CACHE:
         return _CHECK_ID_CACHE
