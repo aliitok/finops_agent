@@ -8,6 +8,14 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'stg'
+        type: choice
+        options: [dev, stg, prd]
 
 permissions:
   contents: read
