@@ -13,7 +13,7 @@ TA_CHECK_NAMES = {
 }
 
 # in-memory cache (can move to DB later)
-_CHECK_ID_CACHE = {}
+# _CHECK_ID_CACHE = {}
 
 
 # ==============================
@@ -32,19 +32,19 @@ def get_ta_client(creds):
 # CHECK ID RESOLUTION (cached)
 # ==============================
 
-def resolve_check_ids(client):
-    global _CHECK_ID_CACHE
+# def resolve_check_ids(client):
+#     global _CHECK_ID_CACHE
 
-    if _CHECK_ID_CACHE:
-        return _CHECK_ID_CACHE
+#     if _CHECK_ID_CACHE:
+#         return _CHECK_ID_CACHE
 
-    checks = client.describe_trusted_advisor_checks(language="en")["checks"]
+#     checks = client.describe_trusted_advisor_checks(language="en")["checks"]
 
-    for c in checks:
-        if c["name"] in TA_CHECK_NAMES.values():
-            _CHECK_ID_CACHE[c["name"]] = c["id"]
+#     for c in checks:
+#         if c["name"] in TA_CHECK_NAMES.values():
+#             _CHECK_ID_CACHE[c["name"]] = c["id"]
 
-    return _CHECK_ID_CACHE
+#     return _CHECK_ID_CACHE
 
 
 # ==============================
