@@ -13,7 +13,7 @@ TA_CHECK_NAMES = {
 }
 
 # in-memory cache (can move to DB later)
-# _CHECK_ID_CACHE = {}
+_CHECK_ID_CACHE = {}
 
 
 # ==============================
