@@ -269,3 +269,5 @@ This project is intentionally minimal and extensible.
 The goal is to evolve it into a **self-hosted FinOps AI agent platform** without relying on external SaaS tools.
 
 ---
+
+TEST
