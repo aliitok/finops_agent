@@ -3,7 +3,7 @@ import os
 import json
 from aws.assume_role import assume_role
 from aws.cost_explorer import fetch_monthly_cost_by_service, fetch_daily_cost
-from db.db import init_db, save_monthly, save_daily, save_ta_summary
+from db.db import init_db, save_monthly, save_daily, save_ta_summary, save_account
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from services.trusted_advisor import get_ta_summary
 
@@ -44,17 +44,23 @@ def run():
     for acc in accounts:
         print(f"Syncing {acc['name']}...")
 
+        # Get environment from account config (default to "UNKNOWN" if not set)
+        environment = acc.get("environment", "UNKNOWN")
+
+        # Save account metadata
+        save_account(acc["account_id"], acc["name"], acc["role_arn"], environment)
+
         creds = assume_role(acc["role_arn"])
 
         # monthly
         m = fetch_monthly_cost_by_service(creds)
         total, top = process_monthly(m)
-        save_monthly(acc["account_id"], total, top)
+        save_monthly(acc["account_id"], total, top, environment)
 
         # daily
         d = fetch_daily_cost(creds)
         daily = process_daily(d)
-        save_daily(acc["account_id"], daily)
+        save_daily(acc["account_id"], daily, environment)
         
         # trusted advisor summaries
         try:
@@ -63,7 +69,7 @@ def run():
             print(f"Trusted Advisor fetch failed for {acc['name']}: {e}")
             ta = {"error": str(e)}
 
-        save_ta_summary(acc["account_id"], ta)
+        save_ta_summary(acc["account_id"], ta, environment)
 
 if __name__ == "__main__":
     run()

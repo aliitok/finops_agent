@@ -1,7 +1,8 @@
 [
   {
-    "account_id": "458302835598",
-    "name": "prod",
-    "role_arn": "arn:aws:iam::458302835598:role/FinOpsReadOnlyRole"
+    "account_id": "280306825431",
+    "name": "DA_SMARTHOME",
+    "role_arn": "arn:aws:iam::280306825431:role/FinOpsReadOnlyRole",
+    "environment": "STG"
   }
 ]
